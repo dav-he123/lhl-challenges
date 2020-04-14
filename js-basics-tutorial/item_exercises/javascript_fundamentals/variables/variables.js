@@ -1,4 +1,8 @@
-let admin, name; // can declare two variables at once
-name = "John";
-admin = name;
-alert(admin); // "John"
+// let admin;
+// let name;
+// name = "John";
+// admin = name;
+// alert(admin); // "John"
+
+let ourPlanet = "Earth";
+let currentVisitor = "Human";
