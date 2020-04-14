@@ -20,8 +20,13 @@
     <main style="margin: 1em;">
       <h3>TODO List</h3>
       <div>
-        <a class="nav-item nav-link" href="/urls/new">Create New TODO</a>
+        <a class="nav-item nav-link" href="/todo/new">Create New TODO</a>
       </div>
+
+      <main>
+        <%= JSON.stringify(listsDB) %>
+      </main>
+
       <table class="table">
         <thead>
           <tr>
