@@ -1,19 +1,10 @@
 const express = require("express");
-const PORT = 8080; // default port 8080
-const cookieParser = require("cookie-parser");
-// const cookieSession = require("cookie-session");
 const app = express();
-app.use(cookieParser());
+const PORT = 8080; // default port 8080
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set("view engine", "ejs");
-
-// app.use(cookieSession({ name: "user_id", secret: "asdfg" }));
-
-usersDB = {
-  FXF2X: { id: "FXF2X", email: "a@b.com", password: "password" },
-  D3XiL: { id: "D3XiL", email: "b@c.com", password: "password" },
-  //...
-};
 
 listsDB = {
   VbXn9: {
@@ -44,6 +35,7 @@ listsDB = {
     ],
     user_id: "D3XiL",
   },
+
   //.....
 };
 
@@ -60,38 +52,30 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/todo", (req, res) => {
-  // let templateVars = { greeting: "This is my TODO List" };
-
-  // let user;
-  // if (req.session.user_id) {
-  //   user = req.session.user_id;
-  // } else {
-  //   res.redirect("/login");
-  //   return;
-  // }
-
-  // // have to think about this templateVars
   let templateVars = {
-    // urls: toDoForUser(req.session.user_id),
-    // user: usersDB[user],
-    listsDB,
+    lists: listsDB,
   };
-
   res.render("index", templateVars);
+});
+
+app.get("/todo/new", (req, res) => {
+  res.render("new");
+});
+
+app.get("/todo/:uuid", (req, res) => {
+  let templateVars = {
+    uuid: req.params.uuid,
+    specificTask: listsDB[req.params.uuid],
+    todoItems: listsDB[req.params.uuid].items,
+  };
+  res.render("show", templateVars);
+});
+
+app.post("/todo", (req, res) => {
+  console.log(req.body); // Log the POST request body to the console
+  res.send("Ok"); // Respond with 'Ok' (we will replace this)
 });
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
-// have to think about this function
-function toDoForUser(id) {
-  const result = {};
-  for (const obj in listsDB) {
-    if (listsDB[obj].user_id === id) {
-      result[obj] = listsDB[obj];
-    }
-  }
-  console.log(result);
-  return result;
-}

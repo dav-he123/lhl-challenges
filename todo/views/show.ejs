@@ -1,0 +1,24 @@
+<title>URL - TinyApp Example</title>
+
+<body>
+  <%- include('partials/_header') %>
+  <div>
+    <h1 class="card-title">My Todos: <%= specificTask["name"] %></h1>
+  </div>
+
+  <table class="table">
+    <div>
+      <tbody>
+        <% for(let item in todoItems) { %>
+        <tr>
+          <% if(todoItems[item].completed === true) { %>
+          <td style="color: green;"><%= todoItems[item].taskName %></td>
+          <% } else { %>
+          <td style="color: red;"><%= todoItems[item].taskName %></td>
+          <% } %>
+        </tr>
+        <% } %>
+      </tbody>
+    </div>
+  </table>
+</body>
