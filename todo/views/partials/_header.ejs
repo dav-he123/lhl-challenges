@@ -2,4 +2,32 @@
   <div>
     <a class="nav-item nav-link" href="/todo/new">Create New TODO</a>
   </div>
+
+
+    <% if(!user) { %>
+    <form class="form-inline" action="/login" method="POST">
+      <div class="form-group mb-2">
+        <a class="nav-item nav-link" href="/login">Login</a>
+        <a class="nav-item nav-link" href="/register">Register</a>
+      </div>
+    </form>
+    <% } else { %>
+    <p>Logged in as: <%= user.email %></p>
+    <form class="form-inline" action="/logout" method="POST">
+      <div class="form-group mb-2">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          style="
+            background-color: transparent;
+            border-color: black;
+            color: black;
+          "
+        >
+          Logout
+        </button>
+      </div>
+    </form>
+    <% } %>
+  </form>
 </header>

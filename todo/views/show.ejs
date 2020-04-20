@@ -21,4 +21,21 @@
       </tbody>
     </div>
   </table>
+
+  <div class="card-footer text-muted">
+    <h1>Add Item</h1>
+    <form class="form-inline" action="/todo/<%= uuid %>" method="POST">
+      <div class="form-group mb-2">
+        <label for="items">New Item:</label>
+        <input
+          class="form-control"
+          type="text"
+          name="items"
+          placeholder="Add Item"
+          style="width: 300px; margin: 1em;"
+        />
+        <button type="submit" class="btn btn-primary">Add Item</button>
+      </div>
+    </form>
+  </div>
 </body>
