@@ -4,6 +4,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cookieSession = require("cookie-session");
+const bcrypt = require("bcrypt");
 
 app.set("view engine", "ejs");
 app.use(cookieParser());
@@ -62,17 +63,36 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/todo", (req, res) => {
-  let user = req.session.user_id;
+  // let user = req.session.user_id;
+
+  let user;
+  if (req.session.user_id) {
+    user = req.session.user_id;
+  } else {
+    res.redirect("/login");
+    return;
+  }
+
+  // console.log(req.session.user_id);
 
   let templateVars = {
-    lists: listsDB,
+    // lists: listsDB,
+    lists: itemsForUser(req.session.user_id),
     user: usersDB[user],
   };
   res.render("index", templateVars);
 });
 
 app.get("/todo/new", (req, res) => {
-  res.render("new");
+  let templateVars = {
+    user: usersDB[req.session.user_id],
+  };
+  if (!req.session.user_id) {
+    res.redirect("/login");
+    return;
+  }
+
+  res.render("new", templateVars);
 });
 
 app.get("/todo/:uuid", (req, res) => {
@@ -103,12 +123,28 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/todo/:uuid", (req, res) => {
-  listsDB[req.params.uuid].items.push(req.body.items),
-    // } else {
-    //   res.statusCode = 403;
-    //   res.send();
-    // }
-    res.redirect("/todo/" + uuid);
+  // listsDB[req.params.uuid].items.push(req.body.items),
+
+  // user = req.session.user_id;
+
+  // if (listsDB[req.params.uuid].user_id === req.session.user_id) {
+  // let emptyObj = { taskName: req.body.items, completed: false };
+  // console.log(listsDB[req.params.uuid].items.push(emptyObj));
+  // listsDB[req.params.uuid].items.push(emptyObj);
+  // }
+  // listsDB[req.params.uuid].items = req.body.items;
+
+  console.log(req.body);
+  let emptyObj = { taskName: req.body.items, completed: false };
+  // console.log(listsDB[req.params.uuid].items.push(emptyObj));
+
+  console.log(emptyObj);
+
+  listsDB[req.params.uuid].items = [];
+
+  console.log(listsDB[req.params.uuid].items.push(emptyObj));
+
+  res.redirect(`/todo/${req.params.uuid}`);
 });
 
 app.post("/login", (req, res) => {
@@ -123,7 +159,7 @@ app.post("/login", (req, res) => {
       res.statusCode = 403;
       res.end("User is not found! Please try again!");
     } else {
-      if (req.body.password === user.password) {
+      if (bcrypt.compareSync(req.body.password, user.password)) {
         req.session.user_id = user.id;
         res.redirect("/todo");
       } else {
@@ -135,7 +171,7 @@ app.post("/login", (req, res) => {
     }
   }
   getUserByEmail(req.body.email, usersDB);
-  res.cookie("name", "user_id");
+  // res.cookie("name", "user_id");
 });
 
 app.post("/logout", (req, res) => {
@@ -159,7 +195,7 @@ app.post("/register", (req, res) => {
   usersDB[randomID] = {
     id: randomID,
     email: req.body.email,
-    password: req.body.password,
+    password: bcrypt.hashSync(req.body.password, 10),
   };
 
   // res.cookie("user_id", "ss@gmail.com");
@@ -171,12 +207,14 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/todo", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
+  // console.log(req.body); // Log the POST request body to the console
 
   let uuid = generateRandomString();
 
   listsDB[uuid] = {
+    // lists: listsDB,
     name: req.body.name,
+    user_id: req.session.user_id,
   };
 
   res.redirect("/todo/" + uuid);
@@ -224,9 +262,36 @@ const emailLookup = function (usersDB, email) {
 // function addingNewItem(addedItem) {
 //   const result = {};
 //   for (const obj in listsDB) {
-//     listsDB[obj].push(addedItem);
+//     listsDB[obj] = addedItem;
+//     result[obj] = listsDB[obj];
 //   }
-//   result = listsDB[obj];
 //   console.log(result);
 //   return result;
+// }
+
+function itemsForUser(id) {
+  const result = {};
+  for (const obj in listsDB) {
+    if (listsDB[obj].user_id === id) {
+      result[obj] = listsDB[obj];
+    }
+  }
+  console.log(result);
+  return result;
+}
+
+// function add(elem) {
+//   // console.log(listsDB[req.params.uuid].items.push(emptyObj));
+
+//   // console.log(emptyObj);
+//   // listsDB[req.params.uuid].items = [];
+
+//   let arr = listsDB[req.params.uuid].items;
+//   arr = [];
+
+//   for (let i = 0; i < arr.length; i++) {
+//     arr.push(elem);
+//   }
+
+//   return arr;
 // }

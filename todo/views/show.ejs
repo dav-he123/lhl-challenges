@@ -12,9 +12,38 @@
         <% for(let item in todoItems) { %>
         <tr>
           <% if(todoItems[item].completed === true) { %>
-          <td style="color: green;"><%= todoItems[item].taskName %></td>
+          <td id="output">
+            <%= todoItems[item].taskName %>
+
+            <button type="submit" id="changeRed">
+              Click if incomplete
+            </button>
+            <button type="submit" id="changeGreen">
+              Click if complete
+            </button>
+            <script>
+              document.getElementById("changeRed").onclick = function () {
+                document.getElementById("output").style.color = "red";
+              };
+
+              document.getElementById("changeGreen").onclick = function () {
+                document.getElementById("output").style.color = "green";
+              };
+            </script>
+          </td>
+
           <% } else { %>
-          <td style="color: red;"><%= todoItems[item].taskName %></td>
+          <td style="color: red;">
+            <%= todoItems[item].taskName %>
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+              style="background-color: red; border-color: red; color: black;"
+            >
+              Task
+            </button>
+          </td>
           <% } %>
         </tr>
         <% } %>
