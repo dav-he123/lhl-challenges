@@ -101,6 +101,8 @@ app.get("/todo/:uuid", (req, res) => {
     specificTask: listsDB[req.params.uuid],
     todoItems: listsDB[req.params.uuid].items,
     user: usersDB[req.session.user_id],
+    // todoItems: itemsForUser(req.session.user_id),
+    // lists: itemsForUser(req.session.user_id),
   };
   res.render("show", templateVars);
   return;
@@ -136,13 +138,37 @@ app.post("/todo/:uuid", (req, res) => {
 
   console.log(req.body);
   let emptyObj = { taskName: req.body.items, completed: false };
+
   // console.log(listsDB[req.params.uuid].items.push(emptyObj));
 
   console.log(emptyObj);
 
+  // listsDB[req.params.uuid].items = [];
+
   listsDB[req.params.uuid].items = [];
 
-  console.log(listsDB[req.params.uuid].items.push(emptyObj));
+  let arr = listsDB[req.params.uuid].items;
+  // console.log(listsDB[req.params.uuid].items.push(emptyObj));
+  // console.log(arr.push(emptyObj));
+  arr.push(emptyObj);
+
+  // console.log(listsDB[req.params.uuid].items.push(emptyObj));
+
+  // console.log(listsDB[req.params.uuid].items.assign(emptyObj));
+  // listsDB[req.params.uuid].items.push(emptyObj);
+
+  // console.log(listsDB[req.params.uuid].items.push(emptyObj));
+
+  // append multiple values to the array
+  // listsDB[req.params.uuid].items.push(emptyObj);
+
+  // let length = 10;
+
+  // for (let i = 0; i < length; i++) {
+  // console.log(listsDB[req.params.uuid].items.push(emptyObj));
+  // console.log(listsDB[req.params.uuid].items);
+  // }
+  // console.log(match.push(listsDB[req.params.uuid].items.push(emptyObj)));
 
   res.redirect(`/todo/${req.params.uuid}`);
 });
